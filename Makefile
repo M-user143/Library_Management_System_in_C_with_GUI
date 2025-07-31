@@ -4,7 +4,7 @@
 CC = gcc
 
 # Source and output
-SRC = LMS_Gui.c
+SRC = LMS_Gui_main.c core_functions.c 
 OUT = LMS_Gui.exe
 
 # Compiler and linker flags from pkg-config

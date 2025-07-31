@@ -1,8 +1,4 @@
-#include <gtk/gtk.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include "core_functions.h"
 
 // ====================== Data Structures & Constants ======================
 #define MAX_BOOKS 1000
@@ -22,6 +18,10 @@ struct BOOK book;
 struct BOOK library[MAX_BOOKS];
 int book_count = 0;
 int dark_mode = 0;
+
+
+
+
 
 // ====================== Core Logic Functions ======================
 int checkid(int t) {
@@ -49,35 +49,7 @@ void save_books() {
     }
 }
 
-// ====================== GUI Structures ======================
-typedef struct {
-    GtkWidget *window;
-    GtkWidget *stack;
-    
-    // Login Page
-    GtkWidget *login_password;
-    
-    // Main Menu
-    GtkWidget *add_btn, *delete_btn, *search_btn, *view_btn, *edit_btn, *pass_btn, *exit_btn, *theme_btn;
-    
-    // Add Books
-    GtkWidget *add_category, *add_id, *add_name, *add_author, *add_quantity, *add_price, *add_rackno;
-    
-    // View Books
-    GtkWidget *view_tree;
-    
-    // Search Books
-    GtkWidget *search_type, *search_term, *search_results;
-    
-    // Edit Books
-    GtkWidget *edit_id, *edit_name, *edit_author, *edit_quantity, *edit_price, *edit_rackno;
-    
-    // Delete Books
-    GtkWidget *delete_id;
-    
-    // Change Password
-    GtkWidget *old_pass, *new_pass, *confirm_pass;
-} AppWidgets;
+
 
 // ====================== GUI Utility Functions ======================
 void show_message(GtkWidget *parent, const char *title, const char *message) {
@@ -664,7 +636,6 @@ void build_search_books_page(AppWidgets *app) {
     gtk_stack_add_named(GTK_STACK(app->stack), grid, "search_books");
 }
 
-
 void build_edit_books_page(AppWidgets *app) {
     GtkWidget *grid = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
@@ -786,48 +757,4 @@ void build_change_password_page(AppWidgets *app) {
     gtk_grid_attach(GTK_GRID(grid), back_btn, 0, 4, 2, 1);
     
     gtk_stack_add_named(GTK_STACK(app->stack), grid, "change_password");
-}
-
-// ====================== Main Application ======================
-int main(int argc, char *argv[]) {
-    gtk_init(&argc, &argv);
-    load_books();
-    
-    AppWidgets *app = g_malloc(sizeof(AppWidgets));
-    
-    // Create main window
-    app->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(app->window), "Library Management System");
-    gtk_window_set_default_size(GTK_WINDOW(app->window), 800, 600);
-    gtk_container_set_border_width(GTK_CONTAINER(app->window), 10);
-    g_signal_connect(app->window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    
-    // Create stack for multi-page interface
-    app->stack = gtk_stack_new();
-    gtk_stack_set_transition_type(GTK_STACK(app->stack), GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
-    gtk_stack_set_transition_duration(GTK_STACK(app->stack), 300);
-    gtk_container_add(GTK_CONTAINER(app->window), app->stack);
-    
-    // Build all pages
-    build_login_page(app);
-    build_main_menu(app);
-    build_add_books_page(app);
-    build_view_books_page(app);
-    build_search_books_page(app);
-    build_edit_books_page(app);
-    build_delete_books_page(app);
-    build_change_password_page(app);
-    
-    // Show login page first
-    gtk_stack_set_visible_child_name(GTK_STACK(app->stack), "login");
-    
-    // Apply initial theme
-    apply_theme(app->window, NULL);
-    
-    gtk_widget_show_all(app->window);
-    gtk_main();
-    
-    save_books();
-    g_free(app);
-    return 0;
 }
